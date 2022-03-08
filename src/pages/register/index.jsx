@@ -6,6 +6,7 @@ import {
     message
 } from 'antd';
 import styled from 'styled-components';
+import myAxios from '../../utils/myaxios'
 
 const formItemLayout = {
     labelCol: {
@@ -59,12 +60,30 @@ const RegisterStyle = styled.div`
     }
 `
 
-export default function Register() {
+export default function Register({ changeAuth }) {
     const [form] = Form.useForm();
 
-    const onFinish = (values) => {
+    const onFinish = async (values) => {
         console.log('Received values of form: ', values);
+
+        const res = await myAxios.post('/user/info', {
+            info: {
+                userName: values.username,
+                password: values.password,
+                name: values.username,
+                role: 'normal'
+            }
+        })
+
+        console.log(res);
+        if (res.status === 200 || res.status === 201) {
+            window.localStorage.setItem('auth', JSON.stringify({ status: true, userId: res.data.userId }))
+            changeAuth(true)
+        }
+
+
         message.success('注册成功！')
+
     };
 
 

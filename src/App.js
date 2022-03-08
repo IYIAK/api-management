@@ -10,9 +10,10 @@ function App() {
   const [auth, setAuth] = useState(false)
 
   useEffect(() => {
-    var preAuth = window.localStorage.getItem(auth)
+    var preAuth = JSON.parse(window.localStorage.getItem('auth'))
+    console.log(preAuth);
     if (preAuth !== null) {
-      setAuth(preAuth)
+      setAuth(preAuth.status)
     }
   }, [])
 
@@ -28,7 +29,7 @@ function App() {
           : <>
             {/* 未登录时的路由 */}
             <Route path='/login' element={<Login changeAuth={setAuth}></Login>}></Route>
-            <Route path='/register' element={<Register></Register>}></Route>
+            <Route path='/register' element={<Register changeAuth={setAuth}></Register>}></Route>
             <Route path="*" element={<Navigate to='login' />}></Route>
           </>}
 

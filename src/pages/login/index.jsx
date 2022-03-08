@@ -14,7 +14,14 @@ export default function Login({ changeAuth }) {
             password: values.password
         })
 
-        console.log(res.data.body);
+        console.log(res);
+
+        if (res.status === 200 || res.status === 201) {
+            window.localStorage.setItem('auth', JSON.stringify({ status: true, userId: res.data.userId }))
+            changeAuth(true)
+        }
+
+
 
         // if (values.username === '123' && values.password === '123') {
         //     message.success('登录成功！')
