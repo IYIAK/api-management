@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import Login from './pages/login'
 import Register from './pages/register'
 import Home from './pages/home'
+import ApiItem from "./components/apiItem";
+import ApiList from './components/apiList'
 import './App.css';
 
 function App() {
@@ -23,7 +25,9 @@ function App() {
 
         {auth ? <>
           {/* 登录后的路由 */}
-          <Route path='/home' element={<Home changeAuth={setAuth}></Home>}></Route>
+          <Route path='/home' element={<Home changeAuth={setAuth}></Home>}>
+            <Route path=':projectId/:apiClassName' element={<ApiList></ApiList>}></Route>
+          </Route>
           <Route path="*" element={<Navigate to='home' />} />
         </>
           : <>

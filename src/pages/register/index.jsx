@@ -47,6 +47,7 @@ const RegisterStyle = styled.div`
     background-color: rgb(247, 247, 247);
     display: flex;
     justify-content: center;
+    text-align: center;
 
     .register-form{
         padding: 50px;
