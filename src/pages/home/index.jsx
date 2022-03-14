@@ -1,8 +1,7 @@
-import React, { memo, useEffect, useState, useCallback } from 'react'
-import { Layout, Menu, Breadcrumb } from 'antd';
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons';
+import React, { useEffect, useState, useCallback } from 'react'
+import { Layout, Menu } from 'antd';
 import { Outlet, useNavigate, Link, useParams, Routes, Route } from 'react-router-dom'
-import { nanoid } from 'nanoid';
+
 import ApiItem from '../../components/apiItem'
 import Interfaces from '../interfaces'
 import ApiList from '../../components/apiList'
@@ -25,7 +24,7 @@ export default function Home({ changeAuth }) {
     useEffect(() => {
         async function getProjects() {
             var res = await myaxios.post('/project/query')
-            console.log(res.data);
+            // console.log(res.data);
             setProjects(res.data)
         }
 
