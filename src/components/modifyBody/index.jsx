@@ -87,7 +87,7 @@ const EditableCell = ({
 export default function ModifyBody({ data, setData }) {
     // console.log(data);
 
-    const [dataSource, setDataSource] = useState(data ? (data.parameter ? data.parameter.body : null) : null)
+    const [dataSource, setDataSource] = useState(data ? (data.parameter ? data.parameter.body.map(v => ({ ...v, key: v._id })) : null) : null)
 
     var columns = [
         {
@@ -198,7 +198,7 @@ export default function ModifyBody({ data, setData }) {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={false}
-                rowKey={rec => rec._id}
+            // rowKey={rec => rec._id}
             />
             <Button
                 onClick={handleAdd}

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Login from './pages/login'
 import Register from './pages/register'
 import Home from './pages/home'
-import ApiItem from "./components/apiItem";
+import TestAddProject from "./components/testAddProject";
 
 import './App.css';
 
@@ -22,7 +22,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* <ApiItem></ApiItem> */}
+      {/* <TestAddProject></TestAddProject> */}
       <Routes>
 
         {auth ? <>

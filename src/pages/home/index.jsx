@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { Layout, Menu } from 'antd';
 import { Outlet, useNavigate, Link, useParams, Routes, Route } from 'react-router-dom'
 
-import ApiItem from '../../components/apiItem'
+import ApiItem from '../../components/testAddProject'
 import Interfaces from '../interfaces'
 import ApiList from '../../components/apiList'
 import User from '../user'
@@ -55,7 +55,7 @@ export default function Home({ changeAuth }) {
             </Header>
             <Routes>
                 <Route path='interfaces' element={<Interfaces projects={projects}></Interfaces>}>
-                    <Route path=':projectId/:apiClassName' element={<ApiList></ApiList>}></Route>
+                    <Route path=':projectId/:apiClassName' element={<ApiList projects={projects} setProjects={setProjects}></ApiList>}></Route>
                 </Route>
                 <Route path='projects' element={<Projects projects={projects}></Projects>}>
                     <Route path=':projectId' element={<ApiList project={projects}></ApiList>}></Route>

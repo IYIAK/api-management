@@ -8,10 +8,11 @@ import { Collapse, Descriptions, Badge, Popconfirm, message, Table, Button, } fr
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import CreateApi from '../createApi'
 
+
 const { Panel } = Collapse;
 
 
-export default function ApiList() {
+export default function ApiList({ projects, setProjects }) {
     const { projectId, apiClassName } = useParams()
 
 
@@ -51,9 +52,30 @@ export default function ApiList() {
     }
 
     useEffect(() => {
-        getData()
+        // getData()
+        for (let i of projects) {
+            if (i.projectId === projectId) {
+                setProjectInfo(i)
+                break
+            }
+        }
 
-    }, [getData])
+    }, [projects, projectId])
+
+
+
+    function updateProjects(newProj) {
+        let oldProjs = [...projects]
+        for (let i in oldProjs) {
+            if (oldProjs[i].projectId === newProj.projectId) {
+                oldProjs[i] = newProj
+                // console.log(oldProjs);
+                setProjects(oldProjs)
+                break
+            }
+        }
+    }
+
 
     async function deleteApi(id) {
         // let newProject = { ...projectInfo }
@@ -63,7 +85,8 @@ export default function ApiList() {
         // console.log(res);
         if (res.status === 200) {
             message.success('删除成功！')
-            setProjectInfo(old => ({ ...old, apiList }))
+            // setProjectInfo(old => ({ ...old, apiList }))
+            updateProjects({ ...projectInfo, apiList })
         } else {
             message.error('删除失败！')
         }
@@ -76,10 +99,12 @@ export default function ApiList() {
         let newApiList = [newApi, ...oldApiList]
         // console.log(newApiList);
         const res = await myaxios.put(`/project/info?projectId=${projectId}`, { apiList: newApiList })
-        // console.log(res);
+        console.log(res);
         if (res.status === 200) {
+            const res2 = await myaxios.put(`/project/info?projectId=${projectId}`)
             message.success(type + '成功！')
-            setProjectInfo(old => ({ ...old, apiList: newApiList }))
+            // setProjectInfo(old => ({ ...old, apiList: res2.data.apiList }))
+            updateProjects({ ...projectInfo, apiList: res2.data.apiList })
         } else {
             message.error(type + '失败！')
         }
@@ -121,7 +146,7 @@ export default function ApiList() {
             {renderList()}
         </Collapse>
 
-        {projectInfo ? <CreateApi visible={createVisible} onClose={onClose} projectInfo={projectInfo} modifyApi={modifyApi}></CreateApi> : ''}
+        {projectInfo && createVisible ? <CreateApi visible={createVisible} onClose={onClose} projectInfo={projectInfo} modifyApi={modifyApi}></CreateApi> : ''}
     </>
         // <ListStyle>
         //     {renderList()}
@@ -335,7 +360,7 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
     return (
         <ApiDetailStyle>
 
-            <ModifyApi visible={visible} onClose={onClose} projectInfo={projectInfo} apiData={apiData} modifyApi={modifyApi}></ModifyApi>
+            {visible ? <ModifyApi visible={visible} onClose={onClose} projectInfo={projectInfo} apiData={apiData} modifyApi={modifyApi}></ModifyApi> : ''}
 
 
             <Descriptions title="接口详情" bordered column={3} extra={

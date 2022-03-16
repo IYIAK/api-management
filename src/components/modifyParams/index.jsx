@@ -87,7 +87,9 @@ const EditableCell = ({
 export default function ModifyParams({ data, setData }) {
     // console.log(data);
 
-    const [dataSource, setDataSource] = useState(data ? (data.parameter ? data.parameter.params : null) : null)
+
+    // datasource的每一项必须有key属性，渲染时每一行的key就是这个key属性
+    const [dataSource, setDataSource] = useState(data ? (data.parameter ? data.parameter.params.map(v => ({ ...v, key: v._id })) : null) : null)
 
     var columns = [
         {
@@ -197,7 +199,7 @@ export default function ModifyParams({ data, setData }) {
                 dataSource={dataSource}
                 columns={columns}
                 pagination={false}
-                rowKey={rec => rec._id}
+            // rowKey={rec => rec._id}
             />
             <Button
                 onClick={handleAdd}

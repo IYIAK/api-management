@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
-import { Drawer, Form, Button, Col, Row, Input, Select, DatePicker, Space, Table } from 'antd';
+import { Drawer, Form, Button, Col, Row, Input, Select, DatePicker, Space, Table, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import ModifyParams from "../modifyParams";
 import ModifyBody from '../modifyBody'
 import ModifyReturnType from '../modifyReturnType'
+import { nanoid } from 'nanoid'
 
 const { Option } = Select;
 export default function CreateApi({ visible, onClose, projectInfo, modifyApi }) {
-    console.log(projectInfo);
+    // console.log(projectInfo);
 
     // var data = { ...apiData }
     // var changeData = (newData) => {
@@ -23,12 +24,22 @@ export default function CreateApi({ visible, onClose, projectInfo, modifyApi }) 
         parameter: { params: [], body: [] },
         path: "",
         returnType: [],
-        status: "",
+        status: ""
     })
     // console.log(data);
 
     function handleSave() {
         // console.log('save', data);
+        // 这里给要保存的数据加上一个随机的id
+
+        // var savedData = { ...data, _id: nanoid() } 
+        // console.log(savedData);
+
+        if (!data.class || !data.method || !data.name || !data.path || !data.status) {
+            message.warning('接口信息未填写完整！')
+            return
+        }
+
         modifyApi(data, '添加')
         onClose()
     }

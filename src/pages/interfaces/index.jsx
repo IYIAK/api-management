@@ -2,7 +2,7 @@ import React from 'react'
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { Outlet, useNavigate, Link, useParams } from 'react-router-dom'
 import { nanoid } from 'nanoid';
-import ApiItem from '../../components/apiItem'
+import ApiItem from '../../components/testAddProject'
 import myaxios from '../../utils/myaxios';
 
 const { SubMenu } = Menu;
@@ -13,7 +13,7 @@ export default function Interfaces({ projects }) {
     const navigate = useNavigate();
 
     // 菜单的key千万不能用nanoid随机生成，必须得保证每次的key都一样，菜单才能知道下次更新后的展开及高亮状态
-    // 要注意map的用法和对象还是有区别的
+    // 要注意Map的用法和对象还是有区别的
     function renderMenu() {
         var menus = new Map()
         for (let p of projects) {
@@ -24,7 +24,7 @@ export default function Interfaces({ projects }) {
             // menus[p] = Array.from(classes)
             menus.set(p, Array.from(classes))
         }
-        console.log(menus);
+        // console.log(menus);
         return projects.map((val, i) => (
             <SubMenu key={'sub' + i} title={val.name} >
                 <Menu.Item key={'all' + i} onClick={() => navigate('/home/interfaces/' + val.projectId + '/所有接口')}>所有接口</Menu.Item>

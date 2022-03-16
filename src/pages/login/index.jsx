@@ -7,28 +7,20 @@ import './index.scss'
 
 export default function Login({ changeAuth }) {
     const onFinish = async (values) => {
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
 
         const res = await myAxios.post('/user/login', {
             userName: values.username,
             password: values.password
         })
 
-        console.log(res);
+        // console.log(res);
 
         if (res.status === 200 || res.status === 201) {
             window.localStorage.setItem('auth', JSON.stringify({ status: true, userId: res.data.userId }))
             changeAuth(true)
+            message.success('登录成功！')
         }
-
-
-
-        // if (values.username === '123' && values.password === '123') {
-        //     message.success('登录成功！')
-        //     changeAuth(true)
-        // } else {
-        //     message.error('用户名或密码错误！')
-        // }
 
     };
 
