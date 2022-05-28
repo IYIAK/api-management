@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Layout, Menu, Breadcrumb } from 'antd';
 import { Outlet, useNavigate, Link, useParams } from 'react-router-dom'
 import { nanoid } from 'nanoid';
@@ -7,16 +7,30 @@ import myaxios from '../../utils/myaxios';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
-export default function Interfaces({ projects }) {
+export default function Interfaces({ projects, setProjects }) {
 
     const { projectId, apiClassName } = useParams()
     const navigate = useNavigate();
 
-    // 菜单的key千万不能用nanoid随机生成，必须得保证每次的key都一样，菜单才能知道下次更新后的展开及高亮状态
+    //为了保证数据总是最新，每次挂载interfaces组件时都重新请求一次数据
+    useEffect(() => {
+        async function getProjects() {
+            var res = await myaxios.post('/project/query')
+            // console.log(res.data);
+            setProjects(res.data)
+        }
+
+        getProjects()
+
+
+    }, [setProjects])
+
+    // 菜单的key千万不能用nanoid随机生成，必须得保证每次的key都一样，菜单才能知道下次更新后的展开及高亮状态（react的diff算法通过key决定虚拟dom如何更新）
     // 要注意Map的用法和对象还是有区别的
     function renderMenu() {
         var menus = new Map()
         for (let p of projects) {
+            //似乎api数据本身并没有分类传过来，需要手动计算分类
             let classes = new Set()
             for (let i of p.apiList) {
                 classes.add(i.class)

@@ -13,12 +13,17 @@ const { Panel } = Collapse;
 
 
 export default function ApiList({ projects, setProjects }) {
+    //根据url种的apiClassName决定展示哪些api 
     const { projectId, apiClassName } = useParams()
 
 
     // const [apis, setApis] = useState([])
     // const [baseUrl, setBaseUrl] = useState('')
+
+    //用于存储匹配当前projectId的project信息
     const [projectInfo, setProjectInfo] = useState(null)
+
+    //用于决定新建/修改面板是否展示
     const [createVisible, setCreateVisible] = useState(false)
 
     var showDrawer = () => {
@@ -40,6 +45,7 @@ export default function ApiList({ projects, setProjects }) {
         [projectId]
     )
 
+    //筛选要展示的api
     function filterApis() {
         if (apiClassName === '所有接口')
             return projectInfo.apiList
@@ -63,7 +69,7 @@ export default function ApiList({ projects, setProjects }) {
     }, [projects, projectId])
 
 
-
+    // 修改后需要手动更新本地的projects
     function updateProjects(newProj) {
         let oldProjs = [...projects]
         for (let i in oldProjs) {
@@ -76,7 +82,7 @@ export default function ApiList({ projects, setProjects }) {
         }
     }
 
-
+    //根据api的id删除api
     async function deleteApi(id) {
         // let newProject = { ...projectInfo }
         let apiList = projectInfo.apiList.filter(v => v._id !== id)
@@ -91,6 +97,7 @@ export default function ApiList({ projects, setProjects }) {
             message.error('删除失败！')
         }
     }
+
 
     async function modifyApi(newApi, type) {
         // console.log(newApi);
@@ -191,6 +198,7 @@ const methodColor = {
     DELETE: 'red'
 }
 
+//api展示的头部
 function ApiInfo({ apiData, baseUrl }) {
 
     return (

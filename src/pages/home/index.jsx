@@ -21,6 +21,7 @@ export default function Home({ changeAuth }) {
 
     const navigate = useNavigate();
 
+    //挂载home时就请求所有项目的数据，存入上面的projects里面
     useEffect(() => {
         async function getProjects() {
             var res = await myaxios.post('/project/query')
@@ -54,12 +55,17 @@ export default function Home({ changeAuth }) {
                 <span className='logout' onClick={handleLogOut}>退出登录</span>
             </Header>
             <Routes>
-                <Route path='interfaces' element={<Interfaces projects={projects}></Interfaces>}>
+                {/* 接口管理 */}
+                <Route path='interfaces' element={<Interfaces projects={projects} setProjects={setProjects}></Interfaces>}>
                     <Route path=':projectId/:apiClassName' element={<ApiList projects={projects} setProjects={setProjects}></ApiList>}></Route>
                 </Route>
-                <Route path='projects' element={<Projects projects={projects}></Projects>}>
-                    <Route path=':projectId' element={<ApiList project={projects}></ApiList>}></Route>
+
+                {/* 项目管理 */}
+                <Route path='projects' element={<Projects projects={projects} setProjects={setProjects}></Projects>}>
+                    {/* 在这里写嵌套路由 */}
                 </Route>
+
+                {/* 用户管理 */}
                 <Route path='user' element={<User></User>}></Route>
             </Routes>
             {/* <Footer style={{ textAlign: 'center' }}>API管理平台 - 工程实践项目</Footer> */}
