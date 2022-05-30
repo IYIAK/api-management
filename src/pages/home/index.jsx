@@ -9,6 +9,7 @@ import User from '../user'
 import './index.scss'
 import myaxios from '../../utils/myaxios';
 import Projects from '../projects';
+import ProjectList from '../../components/projectList'
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -63,6 +64,7 @@ export default function Home({ changeAuth }) {
                 {/* 项目管理 */}
                 <Route path='projects' element={<Projects projects={projects} setProjects={setProjects}></Projects>}>
                     {/* 在这里写嵌套路由 */}
+                    <Route path=':projectId/:projectMes' element={<ProjectList projects={projects} setProjects={setProjects}></ProjectList>}></Route>
                 </Route>
 
                 {/* 用户管理 */}

@@ -4,9 +4,10 @@ import { useParams } from 'react-router-dom'
 import myaxios from '../../utils/myaxios'
 import NotFound from '../404'
 import ModifyApi from '../modifyApi'
-import { Collapse, Descriptions, Badge, Popconfirm, message, Table, Button, } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Collapse, Descriptions, Badge, Popconfirm, message, Table, Button, Tooltip } from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined, CodeOutlined } from '@ant-design/icons';
 import CreateApi from '../createApi'
+import GenerateCode from '../generateCode'
 
 
 const { Panel } = Collapse;
@@ -231,6 +232,7 @@ const ApiDetailStyle = styled.div`
 function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
     // console.log(apiData);
     const [visible, setVisible] = useState(false)
+    const [codeVisible, setCodeVisible] = useState(false)
 
     var showDrawer = () => {
         setVisible(true);
@@ -240,7 +242,13 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
         setVisible(false);
     };
 
+    const showCode = () => {
+        setCodeVisible(true)
+    }
 
+    const closeCode = () => {
+        setCodeVisible(false)
+    }
 
     function renderParams() {
         const columns = [
@@ -369,7 +377,7 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
         <ApiDetailStyle>
 
             {visible ? <ModifyApi visible={visible} onClose={onClose} projectInfo={projectInfo} apiData={apiData} modifyApi={modifyApi}></ModifyApi> : ''}
-
+            <GenerateCode visible={codeVisible} setVisible={setCodeVisible} closeCode={closeCode} projectInfo={projectInfo} apiData={apiData} />
 
             <Descriptions title="接口详情" bordered column={3} extra={
                 <div className="fn">
@@ -380,10 +388,21 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
                         okText="确定"
                         cancelText="取消"
                     >
-                        <DeleteOutlined />
+                        <Tooltip title="删除接口">
+                            <DeleteOutlined />
+                        </Tooltip>
+
                     </Popconfirm>
 
-                    <EditOutlined onClick={showDrawer} />
+                    <Tooltip title="修改接口">
+                        <EditOutlined onClick={showDrawer} />
+                    </Tooltip>
+
+
+                    <Tooltip title="生成请求代码">
+                        <CodeOutlined onClick={showCode} />
+                    </Tooltip>
+
                 </div>}>
                 <Descriptions.Item key='name' label="接口名称">{apiData.name}</Descriptions.Item>
 
