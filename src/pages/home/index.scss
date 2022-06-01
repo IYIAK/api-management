@@ -1,32 +1,47 @@
-.home{
-    width: 100%;
-    height: 100vh;
-    min-height: 280px;
+.home {
+  width: 100%;
+  height: 100vh;
+  min-height: 280px;
 
-    .logo {
-        float: left;
-        width: 120px;
-        height: 31px;
-        margin: 16px 24px 16px 0;
-        background: rgba(255, 255, 255, 0.3);
-      }
-    
-      .menu{
-        float: left;
-      }
+  .logo {
+    float: left;
+    width: 120px;
+    height: 31px;
+    margin: 16px 24px 16px 0;
+    background: rgba(255, 255, 255, 0.3);
+  }
 
-      .logout{
-        float: right;
-        color: #fff;
-        cursor: pointer;
-      }
-      
-      .ant-row-rtl #components-layout-demo-top-side .logo {
-        float: right;
-        margin: 16px 0 16px 24px;
-      }
-      
-      .site-layout-background {
-        background: #fff;
-      }
+  .menu {
+    float: left;
+  }
+
+
+  .right {
+    overflow: hidden;
+    // width: 100px;
+    float: right;
+  }
+
+  .logout {
+    float: right;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .userName {
+    float: left;
+    color: #fff;
+    margin-right: 10px;
+  }
+
+
+
+  .ant-row-rtl #components-layout-demo-top-side .logo {
+    float: right;
+    margin: 16px 0 16px 24px;
+  }
+
+  .site-layout-background {
+    background: #fff;
+  }
 }

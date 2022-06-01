@@ -27,7 +27,7 @@ function App() {
 
         {auth ? <>
           {/* 登录后的路由 */}
-          <Route path='/home/*' element={<Home changeAuth={setAuth}></Home>}>
+          <Route path='/home/*' element={<Home changeAuth={setAuth} auth={auth}></Home>}>
 
           </Route>
 

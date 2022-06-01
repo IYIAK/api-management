@@ -13,7 +13,7 @@ import GenerateCode from '../generateCode'
 const { Panel } = Collapse;
 
 
-export default function ApiList({ projects, setProjects }) {
+export default function ApiList({ projects, setProjects, users }) {
     //根据url种的apiClassName决定展示哪些api 
     const { projectId, apiClassName } = useParams()
 
@@ -35,16 +35,16 @@ export default function ApiList({ projects, setProjects }) {
         setCreateVisible(false);
     };
 
-    var getData = useCallback(
-        async () => {
+    // var getData = useCallback(
+    //     async () => {
 
-            const res = await myaxios.get(`/project/info?projectId=${projectId}`)
-            // console.log(res);
-            // setBaseUrl(res.data.baseUrl)
-            setProjectInfo(res.data)
-        },
-        [projectId]
-    )
+    //         const res = await myaxios.get(`/project/info?projectId=${projectId}`)
+    //         // console.log(res);
+    //         // setBaseUrl(res.data.baseUrl)
+    //         setProjectInfo(res.data)
+    //     },
+    //     [projectId]
+    // )
 
     //筛选要展示的api
     function filterApis() {
@@ -58,6 +58,9 @@ export default function ApiList({ projects, setProjects }) {
         }
     }
 
+
+
+
     useEffect(() => {
         // getData()
         for (let i of projects) {
@@ -66,6 +69,7 @@ export default function ApiList({ projects, setProjects }) {
                 break
             }
         }
+        // console.log(users)
 
     }, [projects, projectId])
 
@@ -125,7 +129,7 @@ export default function ApiList({ projects, setProjects }) {
             return <NotFound></NotFound>
         return apis.map((v, i) => (
             <Panel header={<ApiInfo key={v._id} apiData={v} baseUrl={projectInfo.baseUrl} ></ApiInfo>} showArrow={false} key={v._id + apiClassName}>
-                <ApiDetail key={v._id + apiClassName} apiData={v} projectInfo={projectInfo} deleteApi={deleteApi} modifyApi={modifyApi} />
+                <ApiDetail key={v._id + apiClassName} apiData={v} projectInfo={projectInfo} deleteApi={deleteApi} modifyApi={modifyApi} users={users} />
             </Panel>
         ))
     }
@@ -229,7 +233,7 @@ const ApiDetailStyle = styled.div`
 `
 
 
-function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
+function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi, users }) {
     // console.log(apiData);
     const [visible, setVisible] = useState(false)
     const [codeVisible, setCodeVisible] = useState(false)
@@ -373,6 +377,15 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
         )
     }
 
+    function getUserName(userId) {
+        console.log(users)
+        console.log(apiData.creator)
+
+        if (!apiData.creator) return '管理员'
+
+        return users.filter(v => v._id === apiData.creator)[0].name
+    }
+
     return (
         <ApiDetailStyle>
 
@@ -409,7 +422,7 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi }) {
                 <Descriptions.Item key='status' label="接口状态">
                     <Badge status={apiData.status ? (apiData.status === '已完成' ? 'success' : 'default') : 'success'} text={apiData.status ? apiData.status : '已完成'} />
                 </Descriptions.Item>
-                <Descriptions.Item key='creator' label="创建人" >{apiData.creator ? apiData.creator : '管理员'}</Descriptions.Item>
+                <Descriptions.Item key='creator' label="创建人" >{getUserName()}</Descriptions.Item>
                 <Descriptions.Item key='project' label="所属项目" span={2}>{projectInfo.name}</Descriptions.Item>
                 <Descriptions.Item key='class' label="接口分类">{apiData.class}</Descriptions.Item>
                 <Descriptions.Item key='path' label="接口路径" span={3}>

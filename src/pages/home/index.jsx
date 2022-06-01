@@ -15,23 +15,30 @@ const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
 
-export default function Home({ changeAuth }) {
+export default function Home({ changeAuth, auth }) {
     // console.log('render!');
 
     const [projects, setProjects] = useState([])
+
+    const [users, setUsers] = useState(null)
 
     const navigate = useNavigate();
 
     //挂载home时就请求所有项目的数据，存入上面的projects里面
     useEffect(() => {
         async function getProjects() {
-            var res = await myaxios.post('/project/query')
+            var res = await myaxios.get('/project/user?userId=' + JSON.parse(localStorage.getItem('auth')).userId)
             // console.log(res.data);
             setProjects(res.data)
         }
 
-        getProjects()
+        async function getUsers() {
+            const res = await myaxios.post('/user/list')
+            setUsers(res.data)
+        }
 
+        getProjects()
+        getUsers()
 
     }, [])
 
@@ -53,12 +60,16 @@ export default function Home({ changeAuth }) {
                     <Menu.Item key="2" onClick={() => navigate('/home/projects')}>项目管理</Menu.Item>
                     <Menu.Item key="3" onClick={() => navigate('/home/user')}>用户管理</Menu.Item>
                 </Menu>
-                <span className='logout' onClick={handleLogOut}>退出登录</span>
+                <span className="right">
+                    <span className='userName'>{users ? users.filter(v => v._id === JSON.parse(localStorage.getItem('auth')).userId)[0].name : ''}</span>
+                    <span className='logout' onClick={handleLogOut}>退出登录</span>
+                </span>
+
             </Header>
             <Routes>
                 {/* 接口管理 */}
                 <Route path='interfaces' element={<Interfaces projects={projects} setProjects={setProjects}></Interfaces>}>
-                    <Route path=':projectId/:apiClassName' element={<ApiList projects={projects} setProjects={setProjects}></ApiList>}></Route>
+                    <Route path=':projectId/:apiClassName' element={<ApiList projects={projects} setProjects={setProjects} users={users}></ApiList>}></Route>
                 </Route>
 
                 {/* 项目管理 */}

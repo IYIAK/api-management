@@ -18,7 +18,7 @@ export default function CreateApi({ visible, onClose, projectInfo, modifyApi }) 
 
     const [data, setData] = useState({
         class: "",
-        creator: "",
+        creator: JSON.parse(localStorage.getItem('auth')).userId,
         method: "",
         name: "",
         parameter: { params: [], body: [] },
