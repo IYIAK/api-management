@@ -6,17 +6,17 @@ import myAxios from '../../utils/myaxios'
 import myaxios from '../../utils/myaxios';
 
 const { Option } = Select;
-export default function CreateProject({ visible, onClose,setProjects}) {
+export default function CreateProject({ visible, onClose, setProjects }) {
 
     const [data, setData] = useState({
         name: "",
-        projectId:"",
-        baseUrl: "C://",        
+        projectId: "",
+        baseUrl: "C://",
         user: JSON.parse(localStorage.getItem('auth')).userId,
-        group:"TEST",
+        group: "TEST",
         permission: "",
-        description:"",
-        
+        description: "",
+
     })
     // console.log(data);
 
@@ -26,7 +26,7 @@ export default function CreateProject({ visible, onClose,setProjects}) {
 
 
     function handleSave() {
-        if (!data.name || !data.user|| !data.permission ) {
+        if (!data.name || !data.user || !data.permission) {
             message.warning('项目信息未填写完整！')
             return
         }
@@ -35,25 +35,30 @@ export default function CreateProject({ visible, onClose,setProjects}) {
     }
 
 
-    async function createProject(data){
+    async function createProject(data) {
         console.log(data.name)
-        const res =  await myAxios.post('/project/info',{
-                //projectId:data.projectId,
-                userId: data.user, //参与此项目的用户
-                name: data.name, //项目名
-                group: data.group, // 所属分组
-                baseUrl: data.baseUrl, //基本路径
-                description: data.description, //描述
-                permission: data.permission //权限
-            
+        const res = await myAxios.post('/project/info', {
+            //projectId:data.projectId,
+            userId: data.user, //参与此项目的用户
+            name: data.name, //项目名
+            group: data.group, // 所属分组
+            baseUrl: data.baseUrl, //基本路径
+            description: data.description, //描述
+            permission: data.permission //权限
+
         })
         if (res.status === 200 || res.status === 201) {
             message.success('项目创建成功！')
-            var res2 = await myaxios.post('/project/query')
+            let res2 = null
+            if (JSON.parse(localStorage.getItem('auth')).role === 'admin') {
+                res2 = await myaxios.post('/project/query')
+            } else {
+                res2 = await myaxios.get('/project/user?userId=' + JSON.parse(localStorage.getItem('auth')).userId)
+            }
             setProjects(res2.data)
-       }else{
-           message.error('项目创建失败！')
-       }
+        } else {
+            message.error('项目创建失败！')
+        }
     }
 
 
@@ -93,7 +98,7 @@ export default function CreateProject({ visible, onClose,setProjects}) {
                 <Form
                     layout="vertical"
                     hideRequiredMark
-                     onValuesChange={valueChangePro()}
+                    onValuesChange={valueChangePro()}
                 >
                     <Row gutter={16}>
                         <Col span={16}>
@@ -109,11 +114,11 @@ export default function CreateProject({ visible, onClose,setProjects}) {
                             <Form.Item
                                 name="projectId"
                                 label="项目编号"
-                                rules={[{ required: true,message: '项目编号不能为空' }]}
+                                rules={[{ required: true, message: '项目编号不能为空' }]}
                             >
                                 <Input placeholder='项目编号不能为空' />
                             </Form.Item>
-                        </Col>  
+                        </Col>
                     </Row>
                     <Row gutter={16}>
                         <Col span={16}>
@@ -130,7 +135,7 @@ export default function CreateProject({ visible, onClose,setProjects}) {
                                 name="group"
                                 label="项目分组"
                             >
-                                <Input placeholder={'默认分组'+data.group} />
+                                <Input placeholder={'默认分组' + data.group} />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -139,7 +144,7 @@ export default function CreateProject({ visible, onClose,setProjects}) {
                             <Form.Item
                                 name="description"
                                 label="描述"
-                                rules={[{ required: true}]}
+                                rules={[{ required: true }]}
                             >
                                 <Input placeholder='请输入项目描述' />
                             </Form.Item>

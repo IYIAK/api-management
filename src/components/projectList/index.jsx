@@ -71,7 +71,12 @@ export default function ProjectList({ projects, setProjects, users }) {
         if (res.status === 200) {
             message.success('删除成功！')
             navigate('/home/projects')
-            var res2 = await myaxios.post('/project/query')
+            let res2 = null
+            if (JSON.parse(localStorage.getItem('auth')).role === 'admin') {
+                res2 = await myaxios.post('/project/query')
+            } else {
+                res2 = await myaxios.get('/project/user?userId=' + JSON.parse(localStorage.getItem('auth')).userId)
+            }
             setProjects(res2.data)
         } else {
             message.error('删除失败！')

@@ -14,10 +14,10 @@ export default function Login({ changeAuth }) {
             password: values.password
         })
 
-        // console.log(res);
+        console.log(res);
 
         if (res.status === 200 || res.status === 201) {
-            window.localStorage.setItem('auth', JSON.stringify({ status: true, userId: res.data.userId }))
+            window.localStorage.setItem('auth', JSON.stringify({ status: true, userId: res.data.userId, role: res.data.role }))
             changeAuth(true)
             message.success('登录成功！')
         }
