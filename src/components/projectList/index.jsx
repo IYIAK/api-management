@@ -4,9 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 import myaxios from '../../utils/myaxios'
 import NotFound from '../404'
 import ModifyProject from '../modifyProject'
-import { Collapse, Descriptions, Badge, Popconfirm, message, Table, Button, } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Collapse, Descriptions, Badge, Popconfirm, message, Table, Button, Tooltip } from 'antd';
+import { EditOutlined, DeleteOutlined, PlusOutlined, CodeOutlined } from '@ant-design/icons';
 import CreateProject from '../../components/createProject'
+import iojson from 'iojson'
 
 const { Panel } = Collapse;
 
@@ -64,6 +65,7 @@ export default function ProjectList({ projects, setProjects, users }) {
         }
     }
 
+
     // //删除project
     async function deleteProject(projectId) {
         const res = await myaxios.delete(`/project/info?projectId=${projectId}`)
@@ -97,7 +99,12 @@ export default function ProjectList({ projects, setProjects, users }) {
         })
         if (res.status === 200) {
             message.success(type + '成功！')
-            var res2 = await myaxios.post('/project/query')
+            let res2 = null
+            if (JSON.parse(localStorage.getItem('auth')).role === 'admin') {
+                res2 = await myaxios.post('/project/query')
+            } else {
+                res2 = await myaxios.get('/project/user?userId=' + JSON.parse(localStorage.getItem('auth')).userId)
+            }
             setProjects(res2.data)
         } else {
             message.error(type + '失败！')
@@ -177,10 +184,20 @@ function ProjectDetail({ projectInfo, deleteProject, modifyProject, users }) {
 
     function getUserName(userId) {
         // console.log(users)
-        // console.log(projectInfo.userId);
-        if (!projectInfo.userId) return '管理员'
-
+        console.log(projectInfo);
+        if (projectInfo.userId.length === 0) return '管理员'
         return users.filter(v => v._id === projectInfo.userId[0])[0].userName
+    }
+
+    const interfaceJson = () => {
+        const outInfo = {}
+        for (let key in projectInfo) {
+            if (key !== 'userId') {
+                outInfo[key] = projectInfo[key]
+            }
+        }
+
+        iojson.exportJSON(outInfo, `${projectInfo.name}`)
     }
 
     return (
@@ -202,6 +219,9 @@ function ProjectDetail({ projectInfo, deleteProject, modifyProject, users }) {
                     </Popconfirm>
 
                     <EditOutlined onClick={showDrawer} />
+                    <Tooltip title="导出全部接口信息">
+                        <CodeOutlined onClick={interfaceJson} />
+                    </Tooltip>
                 </div>}>
                 <Descriptions.Item key='name' label="项目名称">{projectInfo.name}</Descriptions.Item>
                 <Descriptions.Item key='permission' label="项目权限">
