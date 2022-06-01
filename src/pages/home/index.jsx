@@ -75,7 +75,7 @@ export default function Home({ changeAuth, auth }) {
                 {/* 项目管理 */}
                 <Route path='projects' element={<Projects projects={projects} setProjects={setProjects}></Projects>}>
                     {/* 在这里写嵌套路由 */}
-                    <Route path=':projectId/:projectMes' element={<ProjectList projects={projects} setProjects={setProjects}></ProjectList>}></Route>
+                    <Route path=':projectId/:projectMes' element={<ProjectList projects={projects} setProjects={setProjects} users={users}></ProjectList>}></Route>
                 </Route>
 
                 {/* 用户管理 */}

@@ -15,7 +15,7 @@ export default function Interfaces({ projects, setProjects }) {
     //为了保证数据总是最新，每次挂载interfaces组件时都重新请求一次数据
     useEffect(() => {
         async function getProjects() {
-            var res = await myaxios.post('/project/query')
+            var res = await myaxios.get('/project/user?userId=' + JSON.parse(localStorage.getItem('auth')).userId)
             // console.log(res.data);
             setProjects(res.data)
         }

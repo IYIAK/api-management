@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { useParams,useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import myaxios from '../../utils/myaxios'
 import NotFound from '../404'
 import ModifyProject from '../modifyProject'
@@ -10,9 +10,9 @@ import CreateProject from '../../components/createProject'
 
 const { Panel } = Collapse;
 
-export default function ProjectList({ projects, setProjects }) {
-     
-    const { projectId,projectMes } = useParams()
+export default function ProjectList({ projects, setProjects, users }) {
+
+    const { projectId, projectMes } = useParams()
     const navigate = useNavigate();
     //用于存储匹配当前projectId的project信息
     const [projectInfo, setProjectInfo] = useState(null)
@@ -27,16 +27,16 @@ export default function ProjectList({ projects, setProjects }) {
         setCreateVisible(false);
     };
 
-    var getData = useCallback(
-        async () => {
+    // var getData = useCallback(
+    //     async () => {
 
-            const res = await myaxios.get(`/project/info?projectId=${projectId}`)
-            // console.log(res);
-            // setBaseUrl(res.data.baseUrl)
-            setProjectInfo(res.data)
-        },
-        [projectId]
-    )
+    //         const res = await myaxios.get(`/project/info?projectId=${projectId}`)
+    //         // console.log(res);
+    //         // setBaseUrl(res.data.baseUrl)
+    //         setProjectInfo(res.data)
+    //     },
+    //     [projectId]
+    // )
 
 
     useEffect(() => {
@@ -65,7 +65,7 @@ export default function ProjectList({ projects, setProjects }) {
     }
 
     // //删除project
-     async function deleteProject(projectId) {
+    async function deleteProject(projectId) {
         const res = await myaxios.delete(`/project/info?projectId=${projectId}`)
         // console.log(res);
         if (res.status === 200) {
@@ -82,7 +82,7 @@ export default function ProjectList({ projects, setProjects }) {
     async function modifyProject(newProject, type) {
 
         console.log(newProject)
-        const res = await myaxios.put(`/project/info?projectId=${projectId}`, {                 
+        const res = await myaxios.put(`/project/info?projectId=${projectId}`, {
             userId: newProject.user, //参与此项目的用户
             name: newProject.name, //项目名
             group: newProject.group, // 所属分组
@@ -94,7 +94,7 @@ export default function ProjectList({ projects, setProjects }) {
             message.success(type + '成功！')
             var res2 = await myaxios.post('/project/query')
             setProjects(res2.data)
-        }else{
+        } else {
             message.error(type + '失败！')
         }
     }
@@ -103,7 +103,7 @@ export default function ProjectList({ projects, setProjects }) {
         if (projectInfo === null)
             return <NotFound></NotFound>
         return (
-            <ProjectDetail key={projectInfo._id}  projectInfo={projectInfo} deleteProject={deleteProject} modifyProject={modifyProject}></ProjectDetail>
+            <ProjectDetail key={projectInfo._id} projectInfo={projectInfo} deleteProject={deleteProject} modifyProject={modifyProject} users={users}></ProjectDetail>
         )
     }
 
@@ -118,17 +118,17 @@ export default function ProjectList({ projects, setProjects }) {
                 right: 40,
                 top: 60,
                 zIndex: 10
-                }}
-                onClick={showDrawer}
-                >
-                    <PlusOutlined />新增项目
-            </Button>
-           
+            }}
+            onClick={showDrawer}
+        >
+            <PlusOutlined />新增项目
+        </Button>
+
         {/* <ProjectDetail key={projectInfo._id}  projectInfo={projectInfo} deleteProject={deleteProject} modifyProject={modifyProject}></ProjectDetail> */}
 
         {renderList()}
 
-        { createVisible ? <CreateProject visible={createVisible} onClose={onClose} setProjects={setProjects} ></CreateProject> : ''}
+        {createVisible ? <CreateProject visible={createVisible} onClose={onClose} setProjects={setProjects} ></CreateProject> : ''}
     </>
         // <ListStyle>
         //     {renderList()}
@@ -157,7 +157,7 @@ const ProjectDetailStyle = styled.div`
 
 `
 
-function ProjectDetail({projectInfo,deleteProject, modifyProject}) {
+function ProjectDetail({ projectInfo, deleteProject, modifyProject, users }) {
     // console.log(apiData);
     //console.log(projectInfo)
     const [visible, setVisible] = useState(false)
@@ -170,17 +170,25 @@ function ProjectDetail({projectInfo,deleteProject, modifyProject}) {
         setVisible(false);
     };
 
+    function getUserName(userId) {
+        // console.log(users)
+        // console.log(projectInfo.userId);
+        if (!projectInfo.userId) return '管理员'
+
+        return users.filter(v => v._id === projectInfo.userId[0])[0].userName
+    }
+
     return (
         <ProjectDetailStyle>
 
-            {visible ? <ModifyProject visible={visible} onClose={onClose} projectInfo={projectInfo}  modifyProject={modifyProject}></ModifyProject> : ''}
+            {visible ? <ModifyProject visible={visible} onClose={onClose} projectInfo={projectInfo} modifyProject={modifyProject}></ModifyProject> : ''}
 
 
             <Descriptions title="项目信息" bordered column={3} extra={
                 <div className="fn">
                     <Popconfirm
                         title="确定要删除该项目吗？"
-                         onConfirm={() => deleteProject(projectInfo._id)}
+                        onConfirm={() => deleteProject(projectInfo._id)}
                         // onCancel={cancel}
                         okText="确定"
                         cancelText="取消"
@@ -194,7 +202,7 @@ function ProjectDetail({projectInfo,deleteProject, modifyProject}) {
                 <Descriptions.Item key='permission' label="项目权限">
                     <Badge status={projectInfo.permission ? (projectInfo.permission === 'public' ? 'public' : 'private') : 'public'} text={projectInfo.status ? projectInfo.status : 'public'} />
                 </Descriptions.Item>
-                <Descriptions.Item key='user' label="创建人" >{projectInfo.userId}</Descriptions.Item>
+                <Descriptions.Item key='user' label="创建人" >{getUserName()}</Descriptions.Item>
                 <Descriptions.Item key='description' label="项目描述" span={2}>{projectInfo.description}</Descriptions.Item>
                 <Descriptions.Item key='group' label="所属分组">{projectInfo.group}</Descriptions.Item>
                 <Descriptions.Item key='baseUrl' label="基本路径" span={3}>{projectInfo.baseUrl}</Descriptions.Item>

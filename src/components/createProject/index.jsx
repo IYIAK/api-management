@@ -12,7 +12,7 @@ export default function CreateProject({ visible, onClose,setProjects}) {
         name: "",
         projectId:"",
         baseUrl: "C://",        
-        user: "",
+        user: JSON.parse(localStorage.getItem('auth')).userId,
         group:"TEST",
         permission: "",
         description:"",
@@ -127,11 +127,10 @@ export default function CreateProject({ visible, onClose,setProjects}) {
                         </Col>
                         <Col span={8}>
                             <Form.Item
-                                name="user"
-                                label="创建用户"
-                                rules={[{ required: true, message: '创建用户不能为空' }]}
+                                name="group"
+                                label="项目分组"
                             >
-                                <Input placeholder='创建用户不能为空' />
+                                <Input placeholder={'默认分组'+data.group} />
                             </Form.Item>
                         </Col>
                     </Row>
