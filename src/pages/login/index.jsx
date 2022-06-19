@@ -3,24 +3,32 @@ import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom'
 import myAxios from '../../utils/myaxios'
+import md5 from 'js-md5';
 import './index.scss'
 
 export default function Login({ changeAuth }) {
     const onFinish = async (values) => {
         // console.log('Received values of form: ', values);
 
-        const res = await myAxios.post('/user/login', {
-            userName: values.username,
-            password: values.password
-        })
+        try {
+            const res = await myAxios.post('/user/login', {
+                userName: values.username,
+                password: md5(values.password)
+            })
 
-        console.log(res);
+            // console.log(res);
 
-        if (res.status === 200 || res.status === 201) {
-            window.localStorage.setItem('auth', JSON.stringify({ status: true, userId: res.data.userId, role: res.data.role }))
-            changeAuth(true)
-            message.success('登录成功！')
+            if (res.status === 200 || res.status === 201) {
+                window.localStorage.setItem('auth', JSON.stringify({ status: true, userId: res.data.userId, role: res.data.role }))
+                changeAuth(true)
+                message.success('登录成功！')
+            }
+
+        } catch (error) {
+            message.error('用户名或密码错误！')
         }
+
+
 
     };
 

@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Modal } from 'antd';
-import hljs from 'highlight.js/lib/core';
-import javascript from 'highlight.js/lib/languages/javascript';
-hljs.registerLanguage('javascript', javascript);
+import HighLight from '../codeHighLight'
 
 export default function GenerateCode({ visible, setVisible, closeCode, projectInfo, apiData }) {
     const [loading, setLoading] = useState(false);
@@ -76,8 +74,8 @@ export default function GenerateCode({ visible, setVisible, closeCode, projectIn
                 </Button>,
             ]}
         >
-            <pre><code>axios.{apiData.method.toLowerCase() + '(\'' + projectInfo.baseUrl + apiData.path + paramsToString() + '\'' + bodyToString()})</code></pre>
-
+            {/* <pre><code>axios.{apiData.method.toLowerCase() + '(\'' + projectInfo.baseUrl + apiData.path + paramsToString() + '\'' + bodyToString()}</code></pre> */}
+            <HighLight textContent={'axios.' + apiData.method.toLowerCase() + '(\'' + projectInfo.baseUrl + apiData.path + paramsToString() + '\'' + bodyToString() + ')'} language="javascript"></HighLight>
         </Modal>
 
     );

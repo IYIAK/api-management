@@ -105,13 +105,13 @@ export default function ModifyBody({ data, setData }) {
         },
         {
             title: '类型',
-            dataIndex: 'example',
+            dataIndex: 'type',
             editable: true,
-            render: v => v ? v : '无'
+            render: v => v ? v : 'Any'
         },
         {
             title: '示例',
-            dataIndex: 'type',
+            dataIndex: 'example',
             editable: true,
             render: v => v ? v : '无'
         },
@@ -163,7 +163,7 @@ export default function ModifyBody({ data, setData }) {
             key: dataSource.length,
             name: `test`,
             required: true,
-            type: 'string',
+            type: 'Any',
             example: `无`,
             discription: '无'
         };

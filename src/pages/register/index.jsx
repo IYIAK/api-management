@@ -6,7 +6,8 @@ import {
     message
 } from 'antd';
 import styled from 'styled-components';
-import myAxios from '../../utils/myaxios'
+import myAxios from '../../utils/myaxios';
+import md5 from 'js-md5';
 
 const formItemLayout = {
     labelCol: {
@@ -54,7 +55,7 @@ const RegisterStyle = styled.div`
         padding-left: 0;
         margin-top: 30vh;
         width: 500px;
-        height: 290px;
+        height: 350px;
         box-shadow: 0px 10px 25px #b1b1b1;
         border-radius: 8px;
         background-color: #fff;
@@ -70,9 +71,10 @@ export default function Register({ changeAuth }) {
         const res = await myAxios.post('/user/info', {
             info: {
                 userName: values.username,
-                password: values.password,
+                password: md5(values.password),
                 name: values.username,
-                role: 'normal'
+                role: 'normal',
+                email: values.email
             }
         })
 
@@ -106,8 +108,9 @@ export default function Register({ changeAuth }) {
                     rules={[
                         {
                             required: true,
-                            message: '用户名不能为空！',
+                            message: '用户名长度不小于3，只能包含字母和数字！',
                             whitespace: true,
+                            pattern: "^[A-Za-z0-9]{3,}$"
                         },
                     ]}
                 >
@@ -120,7 +123,8 @@ export default function Register({ changeAuth }) {
                     rules={[
                         {
                             required: true,
-                            message: '密码不能为空！',
+                            message: '密码长度不小于3，只能包含字母、数字、下划线！',
+                            pattern: "^[A-Za-z0-9_]{3,}$"
                         },
                     ]}
                     hasFeedback
@@ -150,6 +154,20 @@ export default function Register({ changeAuth }) {
                     ]}
                 >
                     <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                    name="email"
+                    label="邮箱"
+                    rules={[
+                        {
+                            required: true,
+                            message: '请正确输入邮箱',
+                            type: 'email'
+                        },
+                    ]}
+                >
+                    <Input />
                 </Form.Item>
 
                 <Form.Item {...tailFormItemLayout}>

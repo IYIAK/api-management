@@ -5,9 +5,10 @@ import myaxios from '../../utils/myaxios'
 import NotFound from '../404'
 import ModifyApi from '../modifyApi'
 import { Collapse, Descriptions, Badge, Popconfirm, message, Table, Button, Tooltip } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, CodeOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, PlusOutlined, CodeOutlined, CopyOutlined } from '@ant-design/icons';
 import CreateApi from '../createApi'
 import GenerateCode from '../generateCode'
+import GenerateTS from '../generateTS'
 
 
 const { Panel } = Collapse;
@@ -110,7 +111,13 @@ export default function ApiList({ projects, setProjects, users }) {
         let oldApiList = projectInfo.apiList.filter(v => v._id !== id)
         let newApiList = [newApi, ...oldApiList]
         // console.log(newApiList);
-        const res = await myaxios.put(`/project/info?projectId=${projectId}`, { apiList: newApiList })
+        const res = await myaxios.put(`/project/info?projectId=${projectId}`, { apiList: newApiList }).catch((e) => {
+            // console.log(e, 666) // 这里返回上面的{sus: false,msg: '缺少参数'}
+            // return { msg: '这是await返回的错误信息' } // 可以重定义错误返回
+            message.error('网络连接异常！')
+
+        })
+
         console.log(res);
         if (res.status === 200) {
             const res2 = await myaxios.put(`/project/info?projectId=${projectId}`)
@@ -237,6 +244,7 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi, users }) {
     // console.log(apiData);
     const [visible, setVisible] = useState(false)
     const [codeVisible, setCodeVisible] = useState(false)
+    const [tsVisible, setTsVisible] = useState(false)
 
     var showDrawer = () => {
         setVisible(true);
@@ -254,12 +262,26 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi, users }) {
         setCodeVisible(false)
     }
 
+    const showTS = () => {
+        setTsVisible(true)
+    }
+
+    const closeTS = () => {
+        setTsVisible(false)
+    }
+
     function renderParams() {
         const columns = [
             {
                 title: '参数名称',
                 dataIndex: 'name',
                 key: 'name',
+            },
+            {
+                title: '类型',
+                dataIndex: 'dataType',
+                key: 'dataType',
+                render: v => v ? v : 'Any'
             },
             {
                 title: '是否必须',
@@ -302,6 +324,12 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi, users }) {
                 key: 'body-name',
             },
             {
+                title: '类型',
+                dataIndex: 'dataType',
+                key: 'dataType',
+                render: v => v ? v : 'Any'
+            },
+            {
                 title: '是否必须',
                 dataIndex: 'required',
                 key: 'body-required',
@@ -339,17 +367,18 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi, users }) {
                 key: 'return-name',
                 render: v => v ? v : '无'
             },
+
+            {
+                title: '类型',
+                dataIndex: 'type',
+                key: 'return-type',
+                render: v => v ? v : 'Any'
+            },
             {
                 title: '是否必须',
                 dataIndex: 'required',
                 key: 'return-required',
                 render: v => v === true || v === 'true' || v === '是' || v === 'yes' ? '是' : '否',
-            },
-            {
-                title: '类型',
-                dataIndex: 'type',
-                key: 'return-type',
-                render: v => v ? v : '无'
             },
             {
                 title: '默认值',
@@ -391,6 +420,7 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi, users }) {
 
             {visible ? <ModifyApi visible={visible} onClose={onClose} projectInfo={projectInfo} apiData={apiData} modifyApi={modifyApi}></ModifyApi> : ''}
             <GenerateCode visible={codeVisible} setVisible={setCodeVisible} closeCode={closeCode} projectInfo={projectInfo} apiData={apiData} />
+            <GenerateTS visible={tsVisible} setVisible={setTsVisible} closeTS={closeTS} projectInfo={projectInfo} apiData={apiData} />
 
             <Descriptions title="接口详情" bordered column={3} extra={
                 <div className="fn">
@@ -413,7 +443,11 @@ function ApiDetail({ apiData, projectInfo, deleteApi, modifyApi, users }) {
 
 
                     <Tooltip title="生成请求代码">
-                        <CodeOutlined onClick={showCode} />
+                        <CopyOutlined onClick={showCode} />
+                    </Tooltip>
+
+                    <Tooltip title="生成TypeScript接口定义">
+                        <CodeOutlined onClick={showTS} />
                     </Tooltip>
 
                 </div>}>

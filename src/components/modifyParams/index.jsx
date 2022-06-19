@@ -100,6 +100,13 @@ export default function ModifyParams({ data, setData }) {
             render: v => v ? v : '无'
         },
         {
+            title: '类型',
+            dataIndex: 'dataType',
+            width: '15%',
+            editable: true,
+            render: v => v ? v : 'String'
+        },
+        {
             title: '是否必须',
             dataIndex: 'required',
             render: v => v === true || v === 'true' || v === '是' || v === 'yes' ? '是' : '否',
@@ -160,7 +167,8 @@ export default function ModifyParams({ data, setData }) {
             name: `test`,
             required: true,
             example: `无`,
-            discription: '无'
+            discription: '无',
+            dataType: 'Any'
         };
         setDataSource(dataSource => [...dataSource, newData])
 

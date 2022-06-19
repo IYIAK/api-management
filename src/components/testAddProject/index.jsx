@@ -8,7 +8,7 @@ export default function testAddProject() {
 
   async function test() {
     var res = await myAxios.post('/project/info', {
-      name: 'test2',
+      name: 'test3',
       group: 'default',
       baseUrl: 'http://localhost:8000',
       apiList: [
@@ -25,7 +25,8 @@ export default function testAddProject() {
                 name: ` userId`,
                 required: true,
                 example: '无',
-                discription: 'string'
+                discription: 'string',
+                dataType: 'String'
               }
             ]
           },
